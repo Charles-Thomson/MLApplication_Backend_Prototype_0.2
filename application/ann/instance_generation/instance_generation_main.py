@@ -1,11 +1,13 @@
 """generate the intances for trainning of the ann"""
 import json
-from application.ann.agents.agent_selection import new_agent
-from application.ann.environments.environment_selection import new_environment
-from application.ann.agent_brains.brain_selection import new_brain
+import numpy as np
+from application.ann.environments.base_environments.environment_factory import (
+    EnvironmentFactory,
+)
 
 # json_structure = {
-#     "insatnce_type": "",
+#     "env_type": "",
+#     "agent_type": ""
 #     "env_data": {
 #                     "env_map": "",
 #                     "map_dimensions": "",
@@ -28,6 +30,7 @@ class Instance:
     """
     The generated instance class
     """
+
     def __init__(self, environment, agent):
         self.environment = environment
         self.agent = agent
@@ -43,29 +46,50 @@ def new_instance(config: json) -> Instance:
     var: config - the given config settings as json
     rtn: Callable object
     """
+
     insatnce_type: str = config["insatnce_type"]
 
-    environent = environments_available[insatnce_type]
-    agent_brain = brains_available[insatnce_type]
-    agent = agents_available[insatnce_type]
+    # Need to make the env json config file
 
-    environments_available = {
-        "static_state_based": "state_based(env_config=env_config)",
-        "dynamic_coordiate_based": "coordinate_based(env_config=env_config)"
-    }
+    env_config: dict = format_env_config(config["env_data"])
 
-    brains_available = {
-        "static_state_based": "state_based(ann_config=ann_config)",
-        "dynamic_coordiate_based": "coordinate_based(ann_config=ann_config)"
-    }
-
-    agents_available = {
-        "static_state_based": "state_based(brain=brain)",
-        "dynamic_coordiate_based": "coordinate_based(brain=brain)"
-    }
-
-    
+    environment: object = EnvironmentFactory.make_env(
+        env_type=config["env_type"], config=env_config
+    )
 
     this_instance = Instance(environment=environent, agent=agent)
 
     return this_instance
+
+
+def format_env_config(config: dict) -> dict:
+    """Format the Json data to a dict to be passed to the environment factory
+    var: config - Recived json file
+    rtn: env_config - Json file in dict format
+    """
+
+    env_config = {
+        "env_map": "",
+        "map_dimensions": "",
+        "start_location": "",
+        "max_number_of_genrations": "",
+        "max_generation_duration": "",
+        "fitness_threshold": "",
+        "new_generation_threshold": "",
+    }
+
+    env_map_string: str = config["env_map"]
+    env_map_unshaped: np.array = np.fromstring(env_map_string, dtype=int, sep=",")
+    reshape_val: int = int(config["map_dimensions"])
+
+    env_map_shaped: np.array = env_map_unshaped.reshape(reshape_val, -1)
+    env_config["env_map"] = env_map_shaped
+
+    env_config["map_dimensions"] = int(config["map_dimensions"])
+    env_config["start_location"] = int(config["start_location"])
+    env_config["max_number_of_genrations"] = int(config["max_number_of_genrations"])
+    env_config["max_generation_duration"] = int(config["max_generation_duration"])
+    env_config["fitness_threshold"] = float(config["fitness_threshold"])
+    env_config["new_generation_threshold"] = int(config["new_generation_threshold"])
+
+    return env_config
