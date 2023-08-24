@@ -3,7 +3,9 @@ from itertools import chain
 import numpy as np
 
 
-def static_state_observation(agent_state: int, ncol: int, env_map: np.array):
+def static_state_observation(
+    agent_state: int, env_map: np.array, ncol: int
+) -> list[float]:
     """The collection of observation data from a static state based env"""
     loc_row, loc_col = to_coords(agent_state, ncol=ncol)
 

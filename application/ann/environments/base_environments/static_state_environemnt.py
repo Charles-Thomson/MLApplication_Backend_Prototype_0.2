@@ -11,7 +11,9 @@ from application.ann.environments.base_environments.environment_factory import (
     EnvironmentFactory,
 )
 
-from application.ann.environments.observation_data import static_state_observation
+from application.ann.environments.observation_data.static_state_observation import (
+    static_state_observation,
+)
 
 # Not sure if still needed
 # from gym import Env
@@ -41,8 +43,14 @@ class StaticStateEnvironemnt(EnvironemntProtocol):
         self.current_coords: tuple[int, int] = self.to_coords_partial(
             state=self.start_state
         )
-        self.curent_step: int = 0
+        self.current_step: int = 0
         self.path: list[tuple[int, int]] = []
+
+    def get_env_type(self) -> str:
+        """Return the type of the environement
+        rtn -> String: The type of the environement
+        """
+        return "Static_State"
 
     def environment_observation(self) -> np.array:
         """Get observation data from the environment"""
@@ -52,8 +60,7 @@ class StaticStateEnvironemnt(EnvironemntProtocol):
     def step(self, action: int) -> tuple[int, float, bool, list]:
         """Process the next step/movment in the environment"""
 
-        # Working from here to check if the current state is needed
-        self.current_state = self.to_state_partial(coords=self.current_coords)
+        # self.current_state = self.to_state_partial(coords=self.current_coords)
 
         reward: float = self.calculate_reward(self.current_coords)
         new_state_x, new_state_y = self.process_action(action)
@@ -61,11 +68,14 @@ class StaticStateEnvironemnt(EnvironemntProtocol):
 
         info: list = []  # Gym Requiermnt
 
-        self.path.append(new_state_x, new_state_y)
-        self.curent_step += 1
-        self.current_coords = (new_state_x, new_state_y)
+        if termination is True:
+            new_state: int = self.to_state_partial(coords=self.current_coords)
+        else:
+            new_state: int = self.to_state_partial(coords=(new_state_x, new_state_y))
 
-        new_state: int = self.to_state_partial(coords=self.current_coords)
+        self.path.append((new_state_x, new_state_y))
+        self.current_step += 1
+        self.current_coords = (new_state_x, new_state_y)
 
         return new_state, termination, reward, info
 
@@ -104,7 +114,7 @@ class StaticStateEnvironemnt(EnvironemntProtocol):
         termination_conditions: list = [
             new_state_x < 0,
             new_state_y < 0,
-            self.curent_step >= self.max_generation_duration,
+            self.current_step >= self.max_generation_duration,
             get_location_value(self.environment_map, (new_state_x, new_state_y)) == 2,
         ]
 
