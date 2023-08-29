@@ -2,12 +2,15 @@
 
 # define the custom type of brain
 
+from application.ann.agents.agent_factory import AgentFactory
 
+
+@AgentFactory.register_agent("Static_State")
 class StaticStateMazeAgent:
     """Static state maze agent"""
 
     def __init__(self, environemnt: object, agent_brain: object):
-        self.environemnt: object = environemnt
+        self.environment: object = environemnt
         self.brain: object = agent_brain
 
         self.path: list[int] = []
@@ -19,7 +22,7 @@ class StaticStateMazeAgent:
         """Run the agent throught the environment"""
 
         while self.termination is False:
-            observation_data = self.environment.get_environemnt_observation()
+            observation_data = self.environment.get_environment_observation()
             action = self.brain.determin_action(observation_data)
 
             new_coords, termination_status, reward = self.environment.step(action)

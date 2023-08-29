@@ -12,7 +12,7 @@ def test_format_env_config() -> None:
     test_config = {
         "env_map": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
         "map_dimensions": "4",
-        "start_location": "1",
+        "start_location": "1,1",
         "max_number_of_genrations": "2",
         "max_generation_duration": "2",
         "fitness_threshold": "2",
@@ -22,7 +22,7 @@ def test_format_env_config() -> None:
 
     assert isinstance(formatted_config["env_map"], np.ndarray)
     assert isinstance(formatted_config["map_dimensions"], int)
-    assert isinstance(formatted_config["start_location"], int)
+    assert isinstance(formatted_config["start_location"], tuple)
     assert isinstance(formatted_config["max_number_of_genrations"], int)
     assert isinstance(formatted_config["max_generation_duration"], int)
     assert isinstance(formatted_config["fitness_threshold"], float)

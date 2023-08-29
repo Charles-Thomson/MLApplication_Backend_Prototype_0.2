@@ -2,11 +2,13 @@
 
 import numpy as np
 
-from application.ann.environments.base_environments.environment_factory import (
-    EnvironmentFactory,
-)
-from application.ann.environments.base_environments.static_state_environemnt import (
+
+from application.ann.environments.environment_types.static_state_environemnt import (
     StaticStateEnvironemnt,
+)
+
+from application.ann.environments.environment_types.environment_factory import (
+    EnvironmentFactory,
 )
 
 from application.ann.instance_generation.instance_generation_main import (
@@ -17,7 +19,7 @@ from application.ann.instance_generation.instance_generation_main import (
 test_config = {
     "env_map": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
     "map_dimensions": "4",
-    "start_location": "1",
+    "start_location": "1,1",
     "max_number_of_genrations": "2",
     "max_generation_duration": "2",
     "fitness_threshold": "2",
@@ -35,9 +37,8 @@ def test_environemnt_configuration() -> None:
         test_env_type, config=env_config
     )
 
-    assert static_state_test_env.start_state == 1
-    assert static_state_test_env.current_state == 1
-    assert static_state_test_env.current_coords == (0, 1)
+    assert static_state_test_env.start_coords == (1, 1)
+    assert static_state_test_env.current_coords == (1, 1)
     assert static_state_test_env.current_step == 0
     assert static_state_test_env.path == []
 

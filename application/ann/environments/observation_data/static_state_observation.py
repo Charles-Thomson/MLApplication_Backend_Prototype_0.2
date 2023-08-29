@@ -4,10 +4,10 @@ import numpy as np
 
 
 def static_state_observation(
-    agent_state: int, env_map: np.array, ncol: int
+    agent_coords: int, env_map: np.array, ncol: int
 ) -> list[float]:
     """The collection of observation data from a static state based env"""
-    loc_row, loc_col = to_coords(agent_state, ncol=ncol)
+    loc_row, loc_col = agent_coords
 
     values_up_right: list = np.diagonal(env_map[loc_row::-1, loc_col:])[1:]
 

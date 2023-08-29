@@ -8,7 +8,7 @@ class EnvironmentFactory:
 
     @classmethod
     def make_env(cls, env_type: str, config: dict):
-        """Make the env based on given version"""
+        """Make the env based on given type"""
         try:
             retreval = cls.envs[env_type]
         except KeyError as err:

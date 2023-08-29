@@ -33,9 +33,6 @@ class StaticStateEnvironemnt(EnvironemntProtocol):
             static_state_observation, ncol=dimension
         )
 
-        # self.to_coords_partial: callable = partial(to_coords, ncol=dimension)
-        # self.to_state_partial: callable = partial(to_state, ncol=dimension)
-
         self.current_coords: tuple[int, int] = self.start_coords
 
         self.current_step: int = 0
@@ -113,23 +110,6 @@ class StaticStateEnvironemnt(EnvironemntProtocol):
         """Process the given action"""
 
         hrow, hcol = self.current_coords
-
-        # This approach is to be tested - is it cleaner ?
-        # holder: dict = {
-        #     0: (lambda: hrow - 1, hcol -1),
-        #     1: (lambda: hrow - 1, hcol),
-        #     2: (lambda: hrow - 1, hcol + 1),
-        #     3: (lambda: hrow, hcol -1),
-        #     4: (lambda: hrow, hcol),
-        #     5: (lambda: hrow, hcol + 1),
-        #     6: (lambda: hrow + 1, hcol - 1),
-        #     7: (lambda: hrow + 1, hcol),
-        #     8: (lambda: hrow + 1, hcol + 1),
-        # }
-
-        # update: callable = holder.get[action]
-        # new_row, new_col = update()
-        # return (new_row, new_col)
 
         match action:
             case 0:  # Up + Left

@@ -1,9 +1,11 @@
 """generate the intances for trainning of the ann"""
 import json
 import numpy as np
-from application.ann.environments.enviornment_types.environment_factory import (
+
+from application.ann.environments.environment_types.environment_factory import (
     EnvironmentFactory,
 )
+
 
 # json_structure = {
 #     "env_type": "",
@@ -89,7 +91,7 @@ def format_env_config(config: dict) -> dict:
     env_config["map_dimensions"] = int(config["map_dimensions"])
 
     start_x, start_y = config["start_location"].split(",")
-    env_config["start_location"] = (start_x, start_y)
+    env_config["start_location"] = (int(start_x), int(start_y))
 
     env_config["max_number_of_genrations"] = int(config["max_number_of_genrations"])
     env_config["max_generation_duration"] = int(config["max_generation_duration"])
