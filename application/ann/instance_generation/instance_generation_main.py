@@ -1,7 +1,7 @@
 """generate the intances for trainning of the ann"""
 import json
 import numpy as np
-from application.ann.environments.base_environments.environment_factory import (
+from application.ann.environments.enviornment_types.environment_factory import (
     EnvironmentFactory,
 )
 
@@ -31,7 +31,8 @@ class Instance:
     The generated instance class
     """
 
-    def __init__(self, environment, agent):
+    def __init__(self, id, environment, agent):
+        self.id = id
         self.environment = environment
         self.agent = agent
         self.memeory = []  # this will be converted into a db model
@@ -57,7 +58,7 @@ def new_instance(config: json) -> Instance:
         env_type=config["env_type"], config=env_config
     )
 
-    this_instance = Instance(environment=environent, agent=agent)
+    this_instance = Instance(id=id, environment=environment, agent=agent)
 
     return this_instance
 
@@ -86,7 +87,10 @@ def format_env_config(config: dict) -> dict:
     env_config["env_map"] = env_map_shaped
 
     env_config["map_dimensions"] = int(config["map_dimensions"])
-    env_config["start_location"] = int(config["start_location"])
+
+    start_x, start_y = config["start_location"].split(",")
+    env_config["start_location"] = (start_x, start_y)
+
     env_config["max_number_of_genrations"] = int(config["max_number_of_genrations"])
     env_config["max_generation_duration"] = int(config["max_generation_duration"])
     env_config["fitness_threshold"] = float(config["fitness_threshold"])

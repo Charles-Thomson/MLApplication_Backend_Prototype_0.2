@@ -3,20 +3,17 @@ import json
 from functools import partial
 import numpy as np
 
-from application.ann.environments.base_environments.environment_protocol import (
+from application.ann.environments.environment_types.environment_protocol import (
     EnvironemntProtocol,
 )
 
-from application.ann.environments.base_environments.environment_factory import (
+from application.ann.environments.environment_types.environment_factory import (
     EnvironmentFactory,
 )
 
 from application.ann.environments.observation_data.static_state_observation import (
     static_state_observation,
 )
-
-# Not sure if still needed
-# from gym import Env
 
 
 @EnvironmentFactory.register("Static_State")
@@ -30,19 +27,17 @@ class StaticStateEnvironemnt(EnvironemntProtocol):
 
         self.max_generation_duration: int = env_config["max_generation_duration"]
 
-        self.start_state: int = env_config["start_location"]
+        self.start_coords: tuple[int, int] = env_config["start_location"]
 
         self.observation_function: callable = partial(
             static_state_observation, ncol=dimension
         )
 
-        self.to_coords_partial: callable = partial(to_coords, ncol=dimension)
-        self.to_state_partial: callable = partial(to_state, ncol=dimension)
+        # self.to_coords_partial: callable = partial(to_coords, ncol=dimension)
+        # self.to_state_partial: callable = partial(to_state, ncol=dimension)
 
-        self.current_state: int = self.start_state
-        self.current_coords: tuple[int, int] = self.to_coords_partial(
-            state=self.start_state
-        )
+        self.current_coords: tuple[int, int] = self.start_coords
+
         self.current_step: int = 0
         self.path: list[tuple[int, int]] = []
 
@@ -55,31 +50,22 @@ class StaticStateEnvironemnt(EnvironemntProtocol):
     def environment_observation(self) -> np.array:
         """Get observation data from the environment"""
 
-        return self.observation_function(self.current_state, self.environment_map)
+        return self.observation_function(self.current_coords, self.environment_map)
 
-    def step(self, action: int) -> tuple[int, float, bool, list]:
+    def step(self, action: int) -> tuple[int, float, bool]:
         """Process the next step/movment in the environment"""
-
-        # self.current_state = self.to_state_partial(coords=self.current_coords)
 
         reward: float = self.calculate_reward(self.current_coords)
         new_state_x, new_state_y = self.process_action(action)
         termination: bool = self.termination_check(new_state_x, new_state_y)
 
-        info: list = []  # Gym Requiermnt
+        new_coords = (new_state_x, new_state_y)
 
-        if termination is True:
-            new_state: int = self.to_state_partial(coords=self.current_coords)
-        else:
-            new_state: int = self.to_state_partial(coords=(new_state_x, new_state_y))
-
-        self.path.append((new_state_x, new_state_y))
+        self.path.append(new_coords)
+        self.current_coords = new_coords
         self.current_step += 1
-        self.current_coords = (new_state_x, new_state_y)
 
-        return new_state, termination, reward, info
-
-        # Update the new state and new state coords a the end
+        return new_coords, termination, reward
 
     def remove_goal(self, current_state_x: int, current_state_y: int):
         """Remove goal location from maze once reached - sets to open i.e '1'"""
