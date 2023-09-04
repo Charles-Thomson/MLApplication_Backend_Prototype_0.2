@@ -7,14 +7,14 @@ class AgentFactory:
     agents = {}
 
     @classmethod
-    def make_agent(cls, agent_type):
+    def make_agent(cls, agent_type, brain):
         """Generate the agent based on given type"""
         try:
             retreval = cls.agents[agent_type]
-        except:
+        except KeyError as err:
             raise NotImplementedError(f"{agent_type} is not implemented") from err
 
-        return retreval
+        return retreval(brain=brain)
 
     @classmethod
     def register_agent(cls, agent_type):

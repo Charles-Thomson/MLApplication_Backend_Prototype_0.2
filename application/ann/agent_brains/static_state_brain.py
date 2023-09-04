@@ -1,28 +1,25 @@
 """Instance of a brain used by a agent"""
 import numpy as np
-from ANN.config import config
+from application.ann.agent_brains.brain_factory import BrainFactory
 
 
+@BrainFactory.register("generic")
 class BrainInstance:
     """Instance of agent brian"""
 
-    def __init__(
-        self,
-        brain_id,
-        brain_type,
-        generation_num,
-        hidden_weights,
-        output_weights,
-        hidden_layer_activation_func,
-        output_layer_activation_func,
-    ):
-        self.brain_type = brain_type  # May rename to Model type ?
-        self.brain_id: str = brain_id
-        self.generation_num: int = generation_num
-        self.hidden_weights: np.array = hidden_weights
-        self.output_weights: np.array = output_weights
-        self.hidden_layer_activation_func: callable = hidden_layer_activation_func
-        self.output_layer_activation_func: callable = output_layer_activation_func
+    def __init__(self, brain_config):
+        self.brain_type = brain_config["brain_type"]
+        self.brain_id: str = brain_config["brain_id"]
+        self.generation_num: int = brain_config["generation_num"]
+        self.hidden_weights: np.array = brain_config["hidden_weights"]
+        self.output_weights: np.array = brain_config["output_weights"]
+        self.hidden_layer_activation_func: callable = brain_config[
+            "hidden_layer_activation_func"
+        ]
+        self.output_layer_activation_func: callable = brain_config[
+            "output_layer_activation_func"
+        ]
+
         self.fitness: float = 0.0
         self.traversed_path: list[tuple] = []
         self.fitness_by_step: list[float] = []
