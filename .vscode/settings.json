@@ -7,5 +7,6 @@
   "python.linting.enabled": true,
   "python.analysis.extraPaths": [
     "./application/ann/environments/base_environments"
-  ]
+  ],
+  "python.analysis.typeCheckingMode": "off"
 }

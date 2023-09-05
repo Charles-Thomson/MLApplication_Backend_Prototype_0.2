@@ -7,15 +7,15 @@ class WeightHuristicsFactory:
     weight_huristics_functions = {}
 
     @classmethod
-    def get_huristic(cls, weight_huristics):
-        """Generate the brain based of given type"""
+    def get_huristic(cls, weight_huristic: str):
+        """Get weight huristic of given type"""
         try:
-            retreval = cls.weight_huristics_functions[weight_huristics]
+            retreval = cls.weight_huristics_functions[weight_huristic]
 
         except KeyError as err:
-            raise NotImplementedError(f"{weight_huristics} Not implemented") from err
+            raise NotImplementedError(f"{weight_huristic} Not implemented") from err
 
-        return retreval
+        return retreval()
 
     @classmethod
     def register(cls, type_name):
