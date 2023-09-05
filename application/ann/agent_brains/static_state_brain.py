@@ -1,14 +1,11 @@
 """Instance of a brain used by a agent"""
 import numpy as np
-from application.ann.agent_brains.brain_factory import BrainFactory
 
 
-# NOt sure if the data class is the best approach
-@BrainFactory.register("generic")
 class BrainInstance:
     """Instance of agent brian"""
 
-    def __init__(self, brain_config: dict) -> None:
+    def __init__(self, generation_number, brain_config: dict) -> None:
         """Setup the core elements of the brain"""
 
         self.fitness: float = 0.0
@@ -20,12 +17,13 @@ class BrainInstance:
 
         self.brain_type = brain_config["brain_type"]
         self.brain_id: str = brain_config["brain_id"]
-        self.generation_num: int = brain_config["generation_num"]
+        self.generation_num: int = generation_number
+
         self.hidden_layer_activation_func: callable = brain_config[
-            "hidden_layer_activation_func"
+            "hidden_activation_func"
         ]
         self.output_layer_activation_func: callable = brain_config[
-            "output_layer_activation_func"
+            "output_activation_func"
         ]
 
         # working on this

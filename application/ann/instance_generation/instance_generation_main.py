@@ -1,5 +1,6 @@
 """generate the intances for trainning of the ann"""
 import json
+import uuid
 import numpy as np
 from typing import Generator
 
@@ -136,7 +137,11 @@ def format_ann_config(ann_config: dict) -> dict:
         "new_generation_func": "",
         "input_to_hidden_connections": "",
         "hidden_to_output_connections": "",
+        "brain_type": "",
+        "brain_id": "",
     }
+
+    this_ann_confg["brain_id"] = generate_brain_id()
 
     this_ann_confg["weight_init_huristic"] = WeightHuristicsFactory.get_huristic(
         ann_config["weight_init_huristic"]
@@ -201,3 +206,10 @@ def format_env_config(config: dict) -> dict:
     env_config["new_generation_threshold"] = int(config["new_generation_threshold"])
 
     return env_config
+
+
+def generate_brain_id() -> str:
+    """Generate a random brain_ID"""
+    brain_id = uuid.uuid4()
+    brain_id = str(brain_id)[:10]
+    return brain_id

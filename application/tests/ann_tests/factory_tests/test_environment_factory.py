@@ -37,4 +37,6 @@ def test_environemnt_factory(environment_type, test_env_config, expected_type) -
         env_type=environment_type, config=test_env_config
     )
 
+    print(test_environment)
+
     assert isinstance(test_environment, expected_type)

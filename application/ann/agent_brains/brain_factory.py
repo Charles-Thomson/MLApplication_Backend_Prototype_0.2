@@ -5,8 +5,8 @@ from copy import deepcopy
 import random
 import numpy as np
 
-if TYPE_CHECKING:
-    from application.ann.agent_brains.static_state_brain import BrainInstance
+
+from application.ann.agent_brains.static_state_brain import BrainInstance
 
 
 class BrainFactory:
@@ -15,7 +15,13 @@ class BrainFactory:
     brain_types = {}
 
     @classmethod
-    def make_brain(cls, brain_type, ann_config: dict, parents: list[BrainInstance]):
+    def make_brain(
+        cls,
+        generation_number: int,
+        brain_type,
+        ann_config: dict,
+        parents: list[BrainInstance],
+    ):
         """Generate the brain based of given type"""
         try:
             retreval = cls.brain_types[brain_type]
@@ -23,7 +29,9 @@ class BrainFactory:
         except KeyError as err:
             raise NotImplementedError(f"{brain_type} Not implemented") from err
 
-        return retreval(config=ann_config, parents=parents)
+        return retreval(
+            generation_number=generation_number, ann_config=ann_config, parents=parents
+        )
 
     @classmethod
     def register(cls, type_name):
@@ -100,21 +108,25 @@ def apply_mutation(weight_set: np.array) -> np.array:
 
 
 @BrainFactory.register("random_weighted_brain")
-def new_random_weighted_brain(ann_config: dict, parents: list) -> BrainInstance:
+def new_random_weighted_brain(
+    generation_number: int, ann_config: dict, parents: list
+) -> BrainInstance:
     """Generate a randomly weighted brain"""
 
     hidden_weights: np.array = initialize_weights(
-        ann_config["hidden_layer_shape"], ann_config["weight_init_huristic"]
+        layer_connections=ann_config["input_to_hidden_connections"],
+        weight_heuristic=ann_config["weight_init_huristic"],
     )
 
     output_weights: np.array = initialize_weights(
-        ann_config["output_layer_shape"], ann_config["weight_init_huristic"]
+        layer_connections=ann_config["hidden_to_output_connections"],
+        weight_heuristic=ann_config["weight_init_huristic"],
     )
 
     ann_config["hidden_weights"] = hidden_weights
     ann_config["output_weights"] = output_weights
 
-    return BrainInstance(ann_config)
+    return BrainInstance(generation_number, ann_config)
 
 
 # Refacor into random weight brain ?
