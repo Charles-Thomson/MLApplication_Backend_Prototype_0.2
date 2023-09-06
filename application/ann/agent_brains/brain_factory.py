@@ -1,6 +1,5 @@
 """Brain generation in the form of a factory"""
 from __future__ import annotations
-from typing import TYPE_CHECKING
 from copy import deepcopy
 import random
 import numpy as np
@@ -46,7 +45,7 @@ class BrainFactory:
 
 @BrainFactory.register("generational_weighted_brain")
 def new_generational_weighted_brain(
-    ann_config: dict, parents: list[BrainInstance]
+    ann_config: dict, parents: list[BrainInstance], generation_number
 ) -> BrainInstance:
     """Generate a new generationally weighted brain"""
 
@@ -81,7 +80,7 @@ def new_generational_weighted_brain(
     ann_config["hidden_weights"] = new_input_to_hidden_weight
     ann_config["output_weights"] = new_hidden_to_output_weights
 
-    return BrainInstance(ann_config)
+    return BrainInstance(brain_config=ann_config, generation_number=generation_number)
 
 
 def apply_mutation(weight_set: np.array) -> np.array:

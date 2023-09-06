@@ -18,10 +18,35 @@ test_ann_config: dict = {
 }
 
 
-def test_formatting_ann_config() -> None:
+@pytest.mark.parametrize(
+    "test_config",
+    [
+        (
+            {
+                "weight_init_huristic": "he_weight",
+                "hidden_activation_func": "linear_activation_function",
+                "output_activation_func": "argmax_activation",
+                "new_generation_func": "crossover_weights_average",
+                "input_to_hidden_connections": "(24,9)",
+                "hidden_to_output_connections": "(9,9)",
+            }
+        ),
+        (
+            {
+                "weight_init_huristic": "xavier_weight",
+                "hidden_activation_func": "sigmoid_activation_fucntion",
+                "output_activation_func": "soft_argmax_activation",
+                "new_generation_func": "crossover_weights_average",
+                "input_to_hidden_connections": "(24,9)",
+                "hidden_to_output_connections": "(9,9)",
+            }
+        ),
+    ],
+)
+def test_formatting_ann_config(test_config) -> None:
     """Testing the formatting of the ann config file"""
 
-    foramtted_test_config = format_ann_config(ann_config=test_ann_config)
+    foramtted_test_config = format_ann_config(ann_config=test_config)
 
     assert isinstance(foramtted_test_config, dict)
     assert callable(foramtted_test_config["weight_init_huristic"]) is True

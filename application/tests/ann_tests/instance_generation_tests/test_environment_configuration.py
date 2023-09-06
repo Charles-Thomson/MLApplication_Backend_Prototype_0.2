@@ -21,7 +21,7 @@ test_config = {
     "map_dimensions": "4",
     "start_location": "1,1",
     "max_number_of_genrations": "2",
-    "max_generation_duration": "2",
+    "max_generation_size": "2",
     "fitness_threshold": "2",
     "new_generation_threshold": "2",
 }

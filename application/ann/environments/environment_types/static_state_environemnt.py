@@ -25,7 +25,7 @@ class StaticStateEnvironemnt(EnvironemntProtocol):
 
         dimension: int = env_config["map_dimensions"]
 
-        self.max_generation_duration: int = env_config["max_generation_duration"]
+        self.max_generation_size: int = env_config["max_generation_size"]
 
         self.start_coords: tuple[int, int] = env_config["start_location"]
 
@@ -97,7 +97,7 @@ class StaticStateEnvironemnt(EnvironemntProtocol):
         termination_conditions: list = [
             new_state_x < 0,
             new_state_y < 0,
-            self.current_step >= self.max_generation_duration,
+            self.current_step >= self.max_generation_size,
             get_location_value(self.environment_map, (new_state_x, new_state_y)) == 2,
         ]
 

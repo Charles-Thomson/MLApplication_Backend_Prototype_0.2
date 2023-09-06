@@ -14,7 +14,7 @@ def test_format_env_config() -> None:
         "map_dimensions": "4",
         "start_location": "1,1",
         "max_number_of_genrations": "2",
-        "max_generation_duration": "2",
+        "max_generation_size": "2",
         "fitness_threshold": "2",
         "new_generation_threshold": "2",
     }
@@ -24,6 +24,6 @@ def test_format_env_config() -> None:
     assert isinstance(formatted_config["map_dimensions"], int)
     assert isinstance(formatted_config["start_location"], tuple)
     assert isinstance(formatted_config["max_number_of_genrations"], int)
-    assert isinstance(formatted_config["max_generation_duration"], int)
+    assert isinstance(formatted_config["max_generation_size"], int)
     assert isinstance(formatted_config["fitness_threshold"], float)
     assert isinstance(formatted_config["new_generation_threshold"], int)

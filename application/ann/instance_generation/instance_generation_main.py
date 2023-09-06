@@ -26,46 +26,25 @@ from application.ann.neural_networks.weight_huristics.weight_huristics_factory i
 from application.ann.agents.agent_generator import new_agent_generator
 
 
-# json_structure = {
-#     "env_type": "",
-#     "agent_type": ""
-#     "env_config": {
-# "env_map": "",
-# "map_dimensions": "",
-# "start_location": "",
-#      },
-#        "instance_config": {
-#         "max_number_of_genrations"
-#         "max_generation_duration": "",
-#         "fitness_threshold": "",
-#         "new_generation_threshold": ""
-#      }
-#     "ann_config": {
-#                 "weight_init_huristic": "",
-#                 "hidden_activation_func": "",
-#                 "output_activation_func": "",
-#                 "new_generation_func": "",
-#                 "hidden_layer_shape": "",
-#                 "ouput_layer_shape": ""
-#                 }
-# }
-
-
 class Instance:
     """
     The generated instance class
     """
 
-    def __init__(self, id, environment, agent_generator, instance_config: dict):
-        self.id: str = id
+    def __init__(
+        self, id, environment: object, agent_generator: object, instance_config: dict
+    ):
+        self.instance_id: str = id
         self.environment: object = environment
         self.memeory = []  # this will be converted into a db model
-        self.generation: int = 0
+        self.generation_number: int = 0
 
         self.fitness_threshold: float = instance_config["fitness_threshold"]
-        self.max_number_of_generation: int = instance_config["max_number_of_genrations"]
+        self.max_number_of_generations: int = instance_config[
+            "max_number_of_genrations"
+        ]
         self.new_generation_threshold: int = instance_config["new_generation_threshold"]
-        self.max_generation_duration: int = instance_config["max_generation_duration"]
+        self.max_generation_size: int = instance_config["max_generation_size"]
         self.agent_generator: callable = agent_generator
 
     def run(self):
@@ -79,11 +58,11 @@ def new_instance(config: json) -> Instance:
     rtn: Callable object
     """
 
-    env_config: dict = format_env_config(config["env_data"])
+    env_config: dict = format_env_config(config["env_config"])
 
-    ann_config_formatted: dict = format_ann_config(config["ann_data"])
+    ann_config_formatted: dict = format_ann_config(config["ann_config"])
 
-    instance_config_formatted: dict = format_instance_config(config["insatnce_config"])
+    instance_config_formatted: dict = format_instance_config(config["instance_config"])
 
     environment: object = EnvironmentFactory.make_env(
         env_type=config["env_type"], config=env_config
@@ -94,6 +73,8 @@ def new_instance(config: json) -> Instance:
         ann_config=ann_config_formatted,
         agent_type=config["agent_type"],
     )
+
+    id: str = generate_instance_id()
 
     this_instance = Instance(
         id=id,
@@ -109,7 +90,7 @@ def format_instance_config(config: dict) -> dict:
     """Format the json config to the appropriate types"""
     this_instance_config = {
         "max_number_of_genrations": "",
-        "max_generation_duration": "",
+        "max_generation_size": "",
         "fitness_threshold": "",
         "new_generation_threshold": "",
     }
@@ -117,9 +98,7 @@ def format_instance_config(config: dict) -> dict:
     this_instance_config["max_number_of_genrations"] = int(
         config["max_number_of_genrations"]
     )
-    this_instance_config["max_generation_duration"] = int(
-        config["max_generation_duration"]
-    )
+    this_instance_config["max_generation_size"] = int(config["max_generation_size"])
     this_instance_config["fitness_threshold"] = float(config["fitness_threshold"])
     this_instance_config["new_generation_threshold"] = int(
         config["new_generation_threshold"]
@@ -183,7 +162,7 @@ def format_env_config(config: dict) -> dict:
         "map_dimensions": "",
         "start_location": "",
         "max_number_of_genrations": "",
-        "max_generation_duration": "",
+        "max_generation_size": "",
         "fitness_threshold": "",
         "new_generation_threshold": "",
     }
@@ -201,7 +180,7 @@ def format_env_config(config: dict) -> dict:
     env_config["start_location"] = (int(start_x), int(start_y))
 
     env_config["max_number_of_genrations"] = int(config["max_number_of_genrations"])
-    env_config["max_generation_duration"] = int(config["max_generation_duration"])
+    env_config["max_generation_size"] = int(config["max_generation_size"])
     env_config["fitness_threshold"] = float(config["fitness_threshold"])
     env_config["new_generation_threshold"] = int(config["new_generation_threshold"])
 
@@ -209,6 +188,13 @@ def format_env_config(config: dict) -> dict:
 
 
 def generate_brain_id() -> str:
+    """Generate a random brain_ID"""
+    brain_id = uuid.uuid4()
+    brain_id = str(brain_id)[:10]
+    return brain_id
+
+
+def generate_instance_id() -> str:
     """Generate a random brain_ID"""
     brain_id = uuid.uuid4()
     brain_id = str(brain_id)[:10]
