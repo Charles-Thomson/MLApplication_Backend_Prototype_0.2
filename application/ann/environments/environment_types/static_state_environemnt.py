@@ -44,7 +44,7 @@ class StaticStateEnvironemnt(EnvironemntProtocol):
         """
         return "Static_State"
 
-    def environment_observation(self) -> np.array:
+    def get_environment_observation(self) -> np.array:
         """Get observation data from the environment"""
 
         return self.observation_function(self.current_coords, self.environment_map)
@@ -81,7 +81,7 @@ class StaticStateEnvironemnt(EnvironemntProtocol):
             return 0.0
 
         match value_at_new_state:
-            case 0:  # Open Tile
+            case 1:  # Open Tile
                 return 0.15
 
             case 2:  # Obstical

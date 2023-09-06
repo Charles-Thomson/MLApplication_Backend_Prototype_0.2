@@ -5,7 +5,7 @@ import numpy as np
 class BrainInstance:
     """Instance of agent brian"""
 
-    def __init__(self, generation_number, brain_config: dict) -> None:
+    def __init__(self, current_generation_number, brain_config: dict) -> None:
         """Setup the core elements of the brain"""
 
         self.fitness: float = 0.0
@@ -17,7 +17,7 @@ class BrainInstance:
 
         self.brain_type = brain_config["brain_type"]
         self.brain_id: str = brain_config["brain_id"]
-        self.generation_num: int = generation_number
+        self.current_generation_number: int = current_generation_number
 
         self.hidden_layer_activation_func: callable = brain_config[
             "hidden_activation_func"

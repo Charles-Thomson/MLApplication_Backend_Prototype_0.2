@@ -41,7 +41,7 @@ def test_get_env_type() -> None:
 def test_environment_observation() -> None:
     """Test the collection of observation data from the environement"""
 
-    observation_data = pytest.static_state_test_env.environment_observation()
+    observation_data = pytest.static_state_test_env.get_environment_observation()
 
     assert len(observation_data) == 24
     assert (x == type(float) for x in observation_data)

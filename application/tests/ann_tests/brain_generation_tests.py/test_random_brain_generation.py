@@ -65,7 +65,7 @@ def test_random_brain_generation() -> None:
     parents: list = []
 
     test_brain = BrainFactory.make_brain(
-        generation_number=0,
+        current_generation_number=0,
         brain_type=test_brain_type,
         ann_config=foramtted_test_config,
         parents=parents,

@@ -14,7 +14,6 @@ class EnvironmentFactory:
         except KeyError as err:
             raise NotImplementedError(f"{env_type} is not implemented") from err
 
-        # retreval.print_id()
         return retreval(env_config=config)
 
     @classmethod

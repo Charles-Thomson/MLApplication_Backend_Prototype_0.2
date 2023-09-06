@@ -29,7 +29,7 @@ def test_generational_brain_generation() -> None:
 
     random_test_brains: list[BrainInstance] = [
         BrainFactory.make_brain(
-            generation_number=0,
+            current_generation_number=0,
             brain_type=test_random_brain_type,
             ann_config=base_brain_config,
             parents=parents,
@@ -42,7 +42,7 @@ def test_generational_brain_generation() -> None:
         assert isinstance(instance, BrainInstance)
 
     test_generational_brain: BrainInstance = BrainFactory.make_brain(
-        generation_number=0,
+        current_generation_number=0,
         brain_type=test_generational_brain_type,
         ann_config=base_brain_config,
         parents=random_test_brains,

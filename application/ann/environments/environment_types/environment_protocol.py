@@ -7,7 +7,7 @@ class EnvironemntProtocol(Protocol):
     """The environment protocol"""
 
     @abstractmethod
-    def environment_observation(self) -> np.array:
+    def get_environment_observation(self) -> np.array:
         """Get observation data from the environment"""
         raise NotImplementedError
 

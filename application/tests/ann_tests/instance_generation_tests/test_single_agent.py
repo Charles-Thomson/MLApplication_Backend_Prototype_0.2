@@ -14,12 +14,12 @@ test_config = {
     "env_type": "Static_State",
     "agent_type": "Static_State",
     "env_config": {
-        "env_map": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+        "env_map": "1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,3",
         "map_dimensions": "4",
         "start_location": "1,1",
         "max_number_of_genrations": "2",
-        "max_generation_size": "2",
-        "fitness_threshold": "2",
+        "max_generation_size": "1",
+        "fitness_threshold": "2.0",
         "new_generation_threshold": "2",
     },
     "instance_config": {
@@ -39,7 +39,7 @@ test_config = {
 }
 
 
-def test_instance_generation_setup() -> None:
+def test_single_agent_run() -> None:
     test_instance: object = new_instance(test_config)
 
     assert isinstance(test_instance.instance_id, str)
@@ -59,12 +59,9 @@ def test_instance_generation_setup() -> None:
         environment=test_instance.environment,
     )
 
-    assert isinstance(next(agent_generator_in_instance), StaticStateMazeAgent)
+    test_agent: StaticStateMazeAgent = next(agent_generator_in_instance)
 
+    test_agent_brain_post_run: BrainInstance = test_agent.run_agent()
 
-# def test_instance_generation_run() -> None:
-#     """Test the running fo a generated instance"""
-#     test_instance: object = new_instance(test_config)
-#     result = test_instance.run()
-
-#     assert isinstance(result, list[BrainInstance])
+    assert test_agent_brain_post_run.fitness > 0.0
+    assert len(test_agent_brain_post_run.traversed_path) > 0

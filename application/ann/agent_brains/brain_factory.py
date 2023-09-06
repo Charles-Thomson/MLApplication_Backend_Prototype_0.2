@@ -16,7 +16,7 @@ class BrainFactory:
     @classmethod
     def make_brain(
         cls,
-        generation_number: int,
+        current_generation_number: int,
         brain_type,
         ann_config: dict,
         parents: list[BrainInstance],
@@ -29,7 +29,9 @@ class BrainFactory:
             raise NotImplementedError(f"{brain_type} Not implemented") from err
 
         return retreval(
-            generation_number=generation_number, ann_config=ann_config, parents=parents
+            current_generation_number=current_generation_number,
+            ann_config=ann_config,
+            parents=parents,
         )
 
     @classmethod
@@ -45,7 +47,7 @@ class BrainFactory:
 
 @BrainFactory.register("generational_weighted_brain")
 def new_generational_weighted_brain(
-    ann_config: dict, parents: list[BrainInstance], generation_number
+    ann_config: dict, parents: list[BrainInstance], current_generation_number
 ) -> BrainInstance:
     """Generate a new generationally weighted brain"""
 
@@ -80,7 +82,9 @@ def new_generational_weighted_brain(
     ann_config["hidden_weights"] = new_input_to_hidden_weight
     ann_config["output_weights"] = new_hidden_to_output_weights
 
-    return BrainInstance(brain_config=ann_config, generation_number=generation_number)
+    return BrainInstance(
+        brain_config=ann_config, current_generation_number=current_generation_number
+    )
 
 
 def apply_mutation(weight_set: np.array) -> np.array:
@@ -108,7 +112,7 @@ def apply_mutation(weight_set: np.array) -> np.array:
 
 @BrainFactory.register("random_weighted_brain")
 def new_random_weighted_brain(
-    generation_number: int, ann_config: dict, parents: list
+    current_generation_number: int, ann_config: dict, parents: list
 ) -> BrainInstance:
     """Generate a randomly weighted brain"""
 
@@ -125,7 +129,7 @@ def new_random_weighted_brain(
     ann_config["hidden_weights"] = hidden_weights
     ann_config["output_weights"] = output_weights
 
-    return BrainInstance(generation_number, ann_config)
+    return BrainInstance(current_generation_number, ann_config)
 
 
 # Refacor into random weight brain ?
