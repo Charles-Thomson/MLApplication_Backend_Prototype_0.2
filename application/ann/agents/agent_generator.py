@@ -1,9 +1,10 @@
 """Generator for agent"""
+from copy import deepcopy
 from typing import Generator
 
-from application.ann.agent_brains.brain_factory import BrainFactory
+from agent_brains.brain_factory import BrainFactory
 
-from application.ann.agents.agent_factory import AgentFactory
+from agents.agent_factory import AgentFactory
 
 
 def new_agent_generator(
@@ -28,8 +29,10 @@ def new_agent_generator(
             current_generation_number=current_generation_number,
         )
 
+        new_env = deepcopy(environment)
+
         agent: object = AgentFactory.make_agent(
-            agent_type=agent_type, brain=agent_brain, environment=environment
+            agent_type=agent_type, brain=agent_brain, environment=new_env
         )
 
         yield agent

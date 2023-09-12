@@ -4,20 +4,22 @@ import uuid
 
 from functools import partial
 
-from application.ann.environments.environment_types.environment_factory import (
+from environments.environment_types.environment_factory import (
     EnvironmentFactory,
 )
 
-from application.ann.agents.agent_generator import new_agent_generator
+from agents.agent_generator import new_agent_generator
 
-from application.ann.instance_generation.config_formatting import (
+from instance_generation.config_formatting import (
     format_instance_config,
     format_ann_config,
     format_env_config,
 )
 
+from logging_files.logging_deco import with_brain_logging
 
-class Instance:
+
+class Learning_Instance:
     """
     The generated instance class
     """
@@ -26,7 +28,7 @@ class Instance:
         self, id, environment: object, agent_generator: object, instance_config: dict
     ):
         self.instance_id: str = id
-        self.environment: object = environment
+        # self.environment: object = environment
         self.memeory = []  # this will be converted into a db model
         self.current_generation_number: int = 0
         self.current_generation_size: int = 0
@@ -40,9 +42,12 @@ class Instance:
         self.max_number_of_generations: int = 1  # Need to implement this
         self.agent_generator: callable = agent_generator  # new per generation
         self.parents = []
+        self.brains = []
 
-    def run(self):
+    @with_brain_logging
+    def run_instance(self):
         """run the instance"""
+
         while self.current_generation_number < self.max_number_of_generations:
             agent_generator: object = self.agent_generator(
                 parents=self.parents,
@@ -55,19 +60,24 @@ class Instance:
                 post_run_agent_brain: object = agent.run_agent()
 
                 self.memeory.append(post_run_agent_brain)
+                self.brains.append(post_run_agent_brain)
 
                 self.current_generation_size += 1
 
             self.current_generation_number += 1
 
-        return self.parents
+        print(self.brains)
+
+        return self.brains
 
 
-def new_instance(config: json) -> Instance:
+def new_instance(config: json) -> Learning_Instance:
     """Generate a new instance based on the given config settings
     var: config - the given config settings as json
     rtn: Callable object
     """
+
+    print("in new insance")
 
     env_config: dict = format_env_config(config["env_config"])
 
@@ -79,6 +89,8 @@ def new_instance(config: json) -> Instance:
         env_type=config["env_type"], config=env_config
     )
 
+    print("vars generated")
+
     agent_generater: callable = partial(
         new_agent_generator,
         ann_config=ann_config_formatted,
@@ -88,12 +100,14 @@ def new_instance(config: json) -> Instance:
 
     id: str = generate_instance_id()
 
-    this_instance = Instance(
+    this_instance = Learning_Instance(
         id=id,
         environment=environment,
         agent_generator=agent_generater,
         instance_config=instance_config_formatted,
     )
+
+    print(this_instance)
 
     return this_instance
 
@@ -103,3 +117,34 @@ def generate_instance_id() -> str:
     brain_id = uuid.uuid4()
     brain_id = str(brain_id)[:10]
     return brain_id
+
+
+if __name__ == "__main__":
+    test_config = {
+        "env_type": "Static_State",
+        "agent_type": "Static_State",
+        "env_config": {
+            "env_map": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+            "map_dimensions": "4",
+            "start_location": "1,1",
+            "max_number_of_genrations": "2",
+            "max_generation_size": "2",
+            "fitness_threshold": "2",
+            "new_generation_threshold": "2",
+        },
+        "instance_config": {
+            "max_number_of_genrations": "2",
+            "max_generation_size": "2",
+            "fitness_threshold": "2",
+            "new_generation_threshold": "2",
+        },
+        "ann_config": {
+            "weight_init_huristic": "he_weight",
+            "hidden_activation_func": "linear_activation_function",
+            "output_activation_func": "argmax_activation",
+            "new_generation_func": "crossover_weights_average",
+            "input_to_hidden_connections": "(24,9)",
+            "hidden_to_output_connections": "(9,9)",
+        },
+    }
+    new_instance(config=test_config)

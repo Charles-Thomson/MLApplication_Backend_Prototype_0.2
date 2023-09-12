@@ -1,47 +1,34 @@
-from neural_networks.weight_huristics.weight_huristics_factory import (
-    WeightHuristicsFactory,
-)
+"""Module doc string"""
+from instance_generation.instance_generation_main import new_instance
 
 
-class TestFactory:
-    """Factory for weight huristics activaition functions"""
-
-    Test_funcs = {}
-
-    @classmethod
-    def get_huristic(cls, weight_huristic: str):
-        """Get weight huristic of given type"""
-        print(cls.Test_funcs)
-        try:
-            retreval = cls.Test_funcs[weight_huristic]
-
-        except KeyError as err:
-            raise NotImplementedError(f"{weight_huristic} Not implemented") from err
-
-        return retreval()
-
-    @classmethod
-    def register(cls, type_name):
-        """Register an brain enerator to the factory"""
-
-        def deco(deco_cls):
-            cls.Test_funcs[type_name] = deco_cls
-            return deco_cls
-
-        return deco
-
-
-@TestFactory.register("test_print")
-def test_function():
-    return lambda: print("test function")
-
-
-def basic_test():
-    """Testing stuff"""
-
-    test = WeightHuristicsFactory.get_huristic("he_weight")
-
-    print(test)
-
-
-basic_test()
+if __name__ == "__main__":
+    test_config = {
+        "env_type": "Static_State",
+        "agent_type": "Static_State",
+        "env_config": {
+            "env_map": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+            "map_dimensions": "4",
+            "start_location": "1,1",
+            "max_number_of_genrations": "2",
+            "max_generation_size": "2",
+            "fitness_threshold": "2",
+            "new_generation_threshold": "2",
+        },
+        "instance_config": {
+            "max_number_of_genrations": "2",
+            "max_generation_size": "2",
+            "fitness_threshold": "2",
+            "new_generation_threshold": "2",
+        },
+        "ann_config": {
+            "weight_init_huristic": "he_weight",
+            "hidden_activation_func": "linear_activation_function",
+            "output_activation_func": "argmax_activation",
+            "new_generation_func": "crossover_weights_average",
+            "input_to_hidden_connections": "(24,9)",
+            "hidden_to_output_connections": "(9,9)",
+        },
+    }
+    test_instance = new_instance(config=test_config)
+    test_instance.run_instance()

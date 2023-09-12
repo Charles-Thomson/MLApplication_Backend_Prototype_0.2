@@ -4,16 +4,16 @@ import uuid
 import numpy as np
 
 
-from application.ann.neural_networks.generational_functions.generational_functions_factory import (
+from neural_networks.generational_functions.generational_functions_factory import (
     GenerationalFunctionsFactory,
 )
-from application.ann.neural_networks.hidden_layer_activation_functions.hidden_layer_functions_factory import (
+from neural_networks.hidden_layer_activation_functions.hidden_layer_functions_factory import (
     HiddenLayerActvaitionFactory,
 )
-from application.ann.neural_networks.output_layer_activation_functions.output_layer_functions_factory import (
+from neural_networks.output_layer_activation_functions.output_layer_functions_factory import (
     OutputLayerActvaitionFactory,
 )
-from application.ann.neural_networks.weight_huristics.weight_huristics_factory import (
+from neural_networks.weight_huristics.weight_huristics_factory import (
     WeightHuristicsFactory,
 )
 
@@ -52,7 +52,7 @@ def format_ann_config(ann_config: dict) -> dict:
         "brain_id": "",
     }
 
-    this_ann_confg["brain_id"] = generate_brain_id()
+    this_ann_confg["brain_id"] = ""
 
     this_ann_confg["weight_init_huristic"] = WeightHuristicsFactory.get_huristic(
         ann_config["weight_init_huristic"]
@@ -117,10 +117,3 @@ def format_env_config(config: dict) -> dict:
     env_config["new_generation_threshold"] = int(config["new_generation_threshold"])
 
     return env_config
-
-
-def generate_brain_id() -> str:
-    """Generate a random brain_ID"""
-    brain_id = uuid.uuid4()
-    brain_id = str(brain_id)[:10]
-    return brain_id

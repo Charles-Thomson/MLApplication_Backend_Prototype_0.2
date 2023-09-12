@@ -35,10 +35,16 @@ class StaticStateMazeAgent:
         self.environment: object = environment
         self.brain: object = agent_brain
 
-        self.path: list[int] = []
+        self.path: list[int, int] = []
         self.fitness_by_step: list[tuple] = []
         self.fitness: float = 0.0
         self.termination: bool = False
+        self.setup_check()
+
+    def setup_check(self) -> None:
+        """Call made to the environement to check the setup data"""
+        start_location = self.environment.setup_call()
+        self.path.append(start_location)
 
     def run_agent(self) -> object:
         """Run the agent throught the environment"""

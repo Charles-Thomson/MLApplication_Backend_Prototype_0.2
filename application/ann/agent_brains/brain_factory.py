@@ -2,10 +2,11 @@
 from __future__ import annotations
 from copy import deepcopy
 import random
+import uuid
 import numpy as np
 
 
-from application.ann.agent_brains.static_state_brain import BrainInstance
+from agent_brains.static_state_brain import BrainInstance
 
 
 class BrainFactory:
@@ -45,6 +46,13 @@ class BrainFactory:
         return deco
 
 
+def generate_brain_id() -> str:
+    """Generate a random brain_ID"""
+    brain_id = uuid.uuid4()
+    brain_id = str(brain_id)[:10]
+    return brain_id
+
+
 @BrainFactory.register("generational_weighted_brain")
 def new_generational_weighted_brain(
     ann_config: dict, parents: list[BrainInstance], current_generation_number
@@ -82,8 +90,11 @@ def new_generational_weighted_brain(
     ann_config["hidden_weights"] = new_input_to_hidden_weight
     ann_config["output_weights"] = new_hidden_to_output_weights
 
+    ann_config["brain_id"] = generate_brain_id()
+
     return BrainInstance(
-        brain_config=ann_config, current_generation_number=current_generation_number
+        brain_config=ann_config,
+        current_generation_number=current_generation_number,
     )
 
 
@@ -129,10 +140,14 @@ def new_random_weighted_brain(
     ann_config["hidden_weights"] = hidden_weights
     ann_config["output_weights"] = output_weights
 
-    return BrainInstance(current_generation_number, ann_config)
+    ann_config["brain_id"] = generate_brain_id()
+
+    return BrainInstance(
+        current_generation_number=current_generation_number,
+        brain_config=ann_config,
+    )
 
 
-# Refacor into random weight brain ?
 def initialize_weights(
     layer_connections: tuple[int, int], weight_heuristic: callable
 ) -> np.array:
