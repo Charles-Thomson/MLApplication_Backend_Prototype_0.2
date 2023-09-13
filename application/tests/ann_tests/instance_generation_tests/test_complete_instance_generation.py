@@ -43,7 +43,7 @@ def test_instance_generation_setup() -> None:
     test_instance: object = new_instance(test_config)
 
     assert isinstance(test_instance.instance_id, str)
-    assert isinstance(test_instance.environment, object)
+
     assert isinstance(test_instance.current_generation_number, int)
     assert isinstance(test_instance.fitness_threshold, float)
 
@@ -56,7 +56,6 @@ def test_instance_generation_setup() -> None:
         parents=test_instance.parents,
         max_generation_size=test_instance.max_generation_size,
         current_generation_number=test_instance.current_generation_number,
-        environment=test_instance.environment,
     )
 
     assert isinstance(next(agent_generator_in_instance), StaticStateMazeAgent)

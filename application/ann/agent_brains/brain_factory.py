@@ -6,7 +6,7 @@ import uuid
 import numpy as np
 
 
-from agent_brains.static_state_brain import BrainInstance
+from application.ann.agent_brains.static_state_brain import BrainInstance
 
 
 class BrainFactory:

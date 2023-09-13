@@ -1,10 +1,7 @@
-import pytest
-import numpy as np
 from application.ann.instance_generation.instance_generation_main import (
     new_instance,
 )
 
-from application.ann.agent_brains.brain_factory import BrainFactory
 from application.ann.agent_brains.static_state_brain import BrainInstance
 
 from application.ann.agents.agent_factory import StaticStateMazeAgent
@@ -43,7 +40,6 @@ def test_single_agent_run() -> None:
     test_instance: object = new_instance(test_config)
 
     assert isinstance(test_instance.instance_id, str)
-    assert isinstance(test_instance.environment, object)
     assert isinstance(test_instance.current_generation_number, int)
     assert isinstance(test_instance.fitness_threshold, float)
 
@@ -56,7 +52,6 @@ def test_single_agent_run() -> None:
         parents=test_instance.parents,
         max_generation_size=test_instance.max_generation_size,
         current_generation_number=test_instance.current_generation_number,
-        environment=test_instance.environment,
     )
 
     test_agent: StaticStateMazeAgent = next(agent_generator_in_instance)

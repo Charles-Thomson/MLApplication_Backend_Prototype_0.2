@@ -1,5 +1,5 @@
 """Module doc string"""
-from instance_generation.instance_generation_main import new_instance
+from application.ann.instance_generation.instance_generation_main import new_instance
 
 
 if __name__ == "__main__":

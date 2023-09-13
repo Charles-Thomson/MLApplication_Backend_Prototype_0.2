@@ -9,7 +9,7 @@ from application.ann.instance_generation.instance_generation_main import (
     format_env_config,
 )
 
-from application.ann.environments.environment_types.static_state_environemnt import (
+from application.ann.environments.environment_types.environment_factory import (
     StaticStateEnvironemnt,
 )
 

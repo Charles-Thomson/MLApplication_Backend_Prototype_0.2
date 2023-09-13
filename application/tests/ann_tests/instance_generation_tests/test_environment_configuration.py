@@ -3,7 +3,7 @@
 import numpy as np
 
 
-from application.ann.environments.environment_types.static_state_environemnt import (
+from application.ann.environments.environment_types.environment_factory import (
     StaticStateEnvironemnt,
 )
 

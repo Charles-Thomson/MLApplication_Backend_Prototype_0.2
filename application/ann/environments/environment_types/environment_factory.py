@@ -3,12 +3,12 @@ import json
 from functools import partial
 import numpy as np
 
-from environments.environment_types.environment_protocol import (
+from application.ann.environments.environment_types.environment_protocol import (
     EnvironemntProtocol,
 )
 
 
-from environments.observation_data.static_state_observation import (
+from application.ann.environments.observation_data.static_state_observation import (
     static_state_observation,
 )
 

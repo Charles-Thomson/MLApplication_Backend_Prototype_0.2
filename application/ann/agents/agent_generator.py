@@ -2,9 +2,9 @@
 from copy import deepcopy
 from typing import Generator
 
-from agent_brains.brain_factory import BrainFactory
+from application.ann.agent_brains.brain_factory import BrainFactory
 
-from agents.agent_factory import AgentFactory
+from application.ann.agents.agent_factory import AgentFactory
 
 
 def new_agent_generator(

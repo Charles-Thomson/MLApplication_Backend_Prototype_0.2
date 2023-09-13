@@ -1,19 +1,17 @@
 """Formatting of the json config file to the appropriate format"""
-
-import uuid
 import numpy as np
 
 
-from neural_networks.generational_functions.generational_functions_factory import (
+from application.ann.neural_networks.generational_functions.generational_functions_factory import (
     GenerationalFunctionsFactory,
 )
-from neural_networks.hidden_layer_activation_functions.hidden_layer_functions_factory import (
+from application.ann.neural_networks.hidden_layer_activation_functions.hidden_layer_functions_factory import (
     HiddenLayerActvaitionFactory,
 )
-from neural_networks.output_layer_activation_functions.output_layer_functions_factory import (
+from application.ann.neural_networks.output_layer_activation_functions.output_layer_functions_factory import (
     OutputLayerActvaitionFactory,
 )
-from neural_networks.weight_huristics.weight_huristics_factory import (
+from application.ann.neural_networks.weight_huristics.weight_huristics_factory import (
     WeightHuristicsFactory,
 )
 
