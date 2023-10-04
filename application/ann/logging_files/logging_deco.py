@@ -1,7 +1,6 @@
 """The decorator for logging"""
 from functools import wraps
 from typing import Any, Callable
-import functools
 import logging
 
 # Basic logging config
@@ -28,23 +27,42 @@ def generate_logger(name: __name__, log_file: str, formatting: str = DEFAULT_FOR
 
 
 brains_log = generate_logger(__name__ + "brain_logger", "brain_logger.log")
+fitness_log = generate_logger(__name__ + "fitness_logger", "fitness_logger.log")
 
 
-def brain_logger(func: Callable[..., Any], brain_log: logging.Logger):
+def brain_logger(func: Callable[..., Any]):
     """Basic logger deco for logging brain data"""
 
     @wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         brains = func(*args)
-        print(brains)
         for brain in brains:
-            print(brain.brain_id)
-            brain_log.info(
+            brains_log.info(
                 f"Brain: {brain.brain_id} - Generation: {brain.current_generation_number} Path: {brain.traversed_path} Fitness: {brain.fitness}"
             )
-        return brains
+            fitness_log.info(
+                f"Brain: {brain.brain_id} - Generation: {brain.current_generation_number} Fitness: {brain.fitness}"
+            )
 
     return wrapper
 
 
-with_brain_logging = functools.partial(brain_logger, brain_log=brains_log)
+with_brain_logging = brain_logger
+
+fitness_threshold_log = generate_logger(
+    __name__ + "fitness_threshold_logger", "fitness_threshold_logger.log"
+)
+
+
+def fitness_threshold_logger(func: Callable[..., Any]):
+    """Logging Deco for the fitness threshold"""
+
+    @wraps(func)
+    def wrapper(*args: Any) -> Any:
+        fitness_threshold = func(*args)
+        fitness_threshold_log.info(f"Current Fitness Threshold: {fitness_threshold}")
+
+    return wrapper
+
+
+with_fitness_threshold_logging = fitness_threshold_logger

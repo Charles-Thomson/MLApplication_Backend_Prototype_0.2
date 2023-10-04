@@ -91,10 +91,7 @@ def format_env_config(config: dict) -> dict:
         "env_map": "",
         "map_dimensions": "",
         "start_location": "",
-        "max_number_of_genrations": "",
-        "max_generation_size": "",
         "fitness_threshold": "",
-        "new_generation_threshold": "",
     }
 
     env_map_string: str = config["env_map"]
@@ -108,10 +105,5 @@ def format_env_config(config: dict) -> dict:
 
     start_x, start_y = config["start_location"].split(",")
     env_config["start_location"] = (int(start_x), int(start_y))
-
-    env_config["max_number_of_genrations"] = int(config["max_number_of_genrations"])
-    env_config["max_generation_size"] = int(config["max_generation_size"])
-    env_config["fitness_threshold"] = float(config["fitness_threshold"])
-    env_config["new_generation_threshold"] = int(config["new_generation_threshold"])
 
     return env_config

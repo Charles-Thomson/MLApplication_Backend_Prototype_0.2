@@ -16,59 +16,106 @@ from application.ann.instance_generation.config_formatting import (
     format_env_config,
 )
 
-from application.ann.logging_files.logging_deco import with_brain_logging
+from application.ann.logging_files.logging_deco import (
+    with_brain_logging,
+    with_fitness_threshold_logging,
+)
 
 
 class Learning_Instance:
     """
     The generated instance class
+    The running of this instance will result in a "Trained" Brain that can then be used on a new environment
     """
 
-    def __init__(
-        self, id, environment: object, agent_generator: object, instance_config: dict
-    ):
+    def __init__(self, id, agent_generator: object, instance_config: dict):
         self.instance_id: str = id
-        # self.environment: object = environment
-        self.memeory = []  # this will be converted into a db model
-        self.current_generation_number: int = 0
-        self.current_generation_size: int = 0
 
-        self.fitness_threshold: float = instance_config["fitness_threshold"]
+        self.current_fitness_threshold: float = instance_config["fitness_threshold"]
+
         self.max_number_of_generations: int = instance_config[
             "max_number_of_genrations"
         ]
-        self.new_generation_threshold: int = instance_config["new_generation_threshold"]
+
         self.max_generation_size: int = instance_config["max_generation_size"]
-        self.max_number_of_generations: int = 1  # Need to implement this
         self.agent_generator: callable = agent_generator  # new per generation
-        self.parents = []
+
+        self.current_parents: list = []
+        self.new_parents: list = []
+
+        self.new_generation_threshold: int = instance_config["new_generation_threshold"]
+
         self.brains = []
+
+    def run_geeration
 
     @with_brain_logging
     def run_instance(self):
         """run the instance"""
+        current_generation_number: int = 0
+        current_generation_size: int = 0
 
-        while self.current_generation_number < self.max_number_of_generations:
+        while current_generation_number < self.max_number_of_generations:
             agent_generator: object = self.agent_generator(
-                parents=self.parents,
+                parents=self.current_parents,
                 max_generation_size=self.max_generation_size,
-                current_generation_number=self.current_generation_number,
+                current_generation_number=current_generation_number,
             )
 
-            while self.current_generation_size < self.max_generation_size:
+            current_generation_size = 0
+            print("new generation starting")
+
+            # break this ot to func ? 
+            while current_generation_size < self.max_generation_size:
                 agent = next(agent_generator)
                 post_run_agent_brain: object = agent.run_agent()
 
-                self.memeory.append(post_run_agent_brain)
-                self.brains.append(post_run_agent_brain)
+                self.brains.append(post_run_agent_brain)  # for logging
 
-                self.current_generation_size += 1
+                if post_run_agent_brain.fitness >= self.current_fitness_threshold:
+                    self.new_parents.append(post_run_agent_brain)
 
-            self.current_generation_number += 1
+                if len(self.new_parents) >= self.new_generation_threshold:
+                    self.current_parents = self.new_parents
+                    self.new_parents = []
+                    self.set_new_fitness_threshold()
+                    print("new generation")
+                    break
 
-        print(self.brains)
+                current_generation_size += 1
 
+            current_generation_number += 1
+
+        print(
+            f"SYSTEM - COMPLETED RUN - Generation Reached: {current_generation_number}"
+        )
+
+        # For logging deco
         return self.brains
+
+    
+
+    @with_fitness_threshold_logging
+    def set_new_fitness_threshold(self) -> float:
+        """
+        Calculate a new fitness threshold based on the average fitness + 10%
+        of the given parents fitness
+        """
+        parents: list = self.current_parents
+        fitness_threshold_percentage_growth: float = 10
+
+        total_combined_fitness: float = sum(instance.fitness for instance in parents)
+        fitness_average: float = total_combined_fitness / len(parents)
+
+        new_fitness_threshold: float = (
+            fitness_average
+            + (fitness_average / 100) * fitness_threshold_percentage_growth
+        )
+
+        self.current_fitness_threshold = new_fitness_threshold
+
+        # For logging deco
+        return new_fitness_threshold
 
 
 def new_instance(config: json) -> Learning_Instance:
@@ -76,8 +123,6 @@ def new_instance(config: json) -> Learning_Instance:
     var: config - the given config settings as json
     rtn: Callable object
     """
-
-    print("in new insance")
 
     env_config: dict = format_env_config(config["env_config"])
 
@@ -102,7 +147,6 @@ def new_instance(config: json) -> Learning_Instance:
 
     this_instance = Learning_Instance(
         id=id,
-        environment=environment,
         agent_generator=agent_generater,
         instance_config=instance_config_formatted,
     )

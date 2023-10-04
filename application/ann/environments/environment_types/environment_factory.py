@@ -48,7 +48,7 @@ class StaticStateEnvironemnt(EnvironemntProtocol):
 
         dimension: int = env_config["map_dimensions"]
 
-        self.max_generation_size: int = env_config["max_generation_size"]
+        self.max_step_count: int = 20
 
         self.start_coords: tuple[int, int] = env_config["start_location"]
 
@@ -92,8 +92,6 @@ class StaticStateEnvironemnt(EnvironemntProtocol):
         self.current_coords = new_coords
         self.current_step += 1
 
-        path_on_termination = []
-
         return new_coords, termination, reward
 
     def remove_goal(self, current_state_x: int, current_state_y: int):
@@ -129,7 +127,7 @@ class StaticStateEnvironemnt(EnvironemntProtocol):
         termination_conditions: list = [
             new_state_x < 0,
             new_state_y < 0,
-            self.current_step >= self.max_generation_size,
+            self.current_step >= self.max_step_count,
             get_location_value(self.environment_map, (new_state_x, new_state_y)) == 2,
         ]
 

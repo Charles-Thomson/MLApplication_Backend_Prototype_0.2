@@ -7,19 +7,15 @@ if __name__ == "__main__":
         "env_type": "Static_State",
         "agent_type": "Static_State",
         "env_config": {
-            "env_map": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+            "env_map": "1,3,1,3,1,3,1,3,1,1,3,1,1,3,1,3",
             "map_dimensions": "4",
             "start_location": "1,1",
-            "max_number_of_genrations": "2",
-            "max_generation_size": "2",
-            "fitness_threshold": "2",
-            "new_generation_threshold": "2",
         },
         "instance_config": {
-            "max_number_of_genrations": "2",
-            "max_generation_size": "2",
+            "max_number_of_genrations": "5",
+            "max_generation_size": "30",
             "fitness_threshold": "2",
-            "new_generation_threshold": "2",
+            "new_generation_threshold": "4",
         },
         "ann_config": {
             "weight_init_huristic": "he_weight",
