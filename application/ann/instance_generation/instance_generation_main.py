@@ -25,7 +25,8 @@ from application.ann.logging_files.logging_deco import (
 class Learning_Instance:
     """
     The generated instance class
-    The running of this instance will result in a "Trained" Brain that can then be used on a new environment
+    The running of this instance will result in a "Trained" Brain that can
+    then be used on a new environment
     """
 
     def __init__(self, id, agent_generator: object, instance_config: dict):
@@ -47,9 +48,6 @@ class Learning_Instance:
 
         self.brains = []
 
-    def run_geeration
-
-    @with_brain_logging
     def run_instance(self):
         """run the instance"""
         current_generation_number: int = 0
@@ -65,12 +63,12 @@ class Learning_Instance:
             current_generation_size = 0
             print("new generation starting")
 
-            # break this ot to func ? 
+            # break this ot to func ?
             while current_generation_size < self.max_generation_size:
                 agent = next(agent_generator)
                 post_run_agent_brain: object = agent.run_agent()
 
-                self.brains.append(post_run_agent_brain)  # for logging
+                self.brains.append(post_run_agent_brain)  # for logging testing
 
                 if post_run_agent_brain.fitness >= self.current_fitness_threshold:
                     self.new_parents.append(post_run_agent_brain)
@@ -92,8 +90,6 @@ class Learning_Instance:
 
         # For logging deco
         return self.brains
-
-    
 
     @with_fitness_threshold_logging
     def set_new_fitness_threshold(self) -> float:

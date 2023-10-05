@@ -29,6 +29,10 @@ def generate_logger(name: __name__, log_file: str, formatting: str = DEFAULT_FOR
 brains_log = generate_logger(__name__ + "brain_logger", "brain_logger.log")
 fitness_log = generate_logger(__name__ + "fitness_logger", "fitness_logger.log")
 
+fitness_threshold_log = generate_logger(
+    __name__ + "fitness_threshold_logger", "fitness_threshold_logger.log"
+)
+
 
 def brain_logger(func: Callable[..., Any]):
     """Basic logger deco for logging brain data"""
@@ -47,13 +51,6 @@ def brain_logger(func: Callable[..., Any]):
     return wrapper
 
 
-with_brain_logging = brain_logger
-
-fitness_threshold_log = generate_logger(
-    __name__ + "fitness_threshold_logger", "fitness_threshold_logger.log"
-)
-
-
 def fitness_threshold_logger(func: Callable[..., Any]):
     """Logging Deco for the fitness threshold"""
 
@@ -65,4 +62,5 @@ def fitness_threshold_logger(func: Callable[..., Any]):
     return wrapper
 
 
+with_brain_logging = brain_logger
 with_fitness_threshold_logging = fitness_threshold_logger
