@@ -2,10 +2,10 @@
 
 import pytest
 
-from application.ann.environments.environment_types.environment_factory import (
+from application.ann.environments.environment_factory import (
     EnvironmentFactory,
 )
-from application.ann.environments.environment_types.environment_factory import (
+from application.ann.environments.environment_factory import (
     StaticStateEnvironemnt,
 )
 

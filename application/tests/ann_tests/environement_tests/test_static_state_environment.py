@@ -1,7 +1,7 @@
 """Testing elements of the static state environement"""
 import pytest
 
-from application.ann.environments.environment_types.environment_factory import (
+from application.ann.environments.environment_factory import (
     EnvironmentFactory,
 )
 
@@ -9,7 +9,7 @@ from application.ann.instance_generation.instance_generation_main import (
     format_env_config,
 )
 
-from application.ann.environments.environment_types.environment_factory import (
+from application.ann.environments.environment_factory import (
     StaticStateEnvironemnt,
 )
 

@@ -65,6 +65,7 @@ def new_generational_weighted_brain(
 
     val: int = len(parents)
     weightings: list[float] = tuple(val / i for i in range(1, val + 1))
+    print("length of parents: {} , weightings: {}".format(val, weightings))
 
     parent_a, parent_b = random.choices(parents, weights=weightings, k=2)
 

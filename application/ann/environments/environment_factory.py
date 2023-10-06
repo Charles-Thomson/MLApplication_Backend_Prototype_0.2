@@ -3,10 +3,7 @@ import json
 from functools import partial
 import numpy as np
 
-from application.ann.environments.environment_types.environment_protocol import (
-    EnvironemntProtocol,
-)
-
+from application.ann.environments.environment_protocol import EnvironemntProtocol
 
 from application.ann.environments.observation_data.static_state_observation import (
     static_state_observation,
@@ -80,7 +77,10 @@ class StaticStateEnvironemnt(EnvironemntProtocol):
         return self.current_coords
 
     def step(self, action: int) -> tuple[int, float, bool]:
-        """Process the next step/movment in the environment"""
+        """Process the next step/movment in the environment
+        var - action: the given action from the agent
+        rtn: new_coords, termination, reward
+        """
 
         reward: float = self.calculate_reward(self.current_coords)
         new_state_x, new_state_y = self.process_action(action)
@@ -190,6 +190,8 @@ def get_location_value(env_map: np.array, coords: tuple):
     """Get the value of a location in the env"""
     try:
         value = env_map[coords[0]][coords[1]]
+        print(coords, value, "In get Location")
+        print(env_map)
         return value
     except IndexError:
         return 2  # Termination condition

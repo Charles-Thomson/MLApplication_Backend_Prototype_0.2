@@ -22,6 +22,11 @@ def new_agent_generator(
         if current_generation_number == 0:
             this_brain_type = "random_weighted_brain"
 
+        # print(
+        #     "in agent generator, gen number: {}, parents: {}".format(
+        #         current_generation_number, parents
+        #     )
+        # )
         agent_brain: object = BrainFactory.make_brain(
             brain_type=this_brain_type,
             ann_config=ann_config,

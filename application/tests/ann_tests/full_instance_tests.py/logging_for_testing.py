@@ -1,7 +1,8 @@
 """Basic logging imports"""
 import logging.handlers
 import os
-
+import numpy as np
+from math import sqrt
 from functools import wraps
 from typing import Any, Callable
 import logging
@@ -15,7 +16,9 @@ logging.basicConfig(
 DEFAULT_FORMAT = "%(levelname)s :: %(funcName)s :: %(message)s"
 
 new_logger = logging.getLogger()
-filename = "application/tests/ann_tests/full_instance_tests.py/test_logs/log_file.log"
+filename = (
+    "application/tests/ann_tests/full_instance_tests.py/test_logs/brain_test_log.log"
+)
 
 should_roll_over = os.path.isfile(filename)
 
@@ -28,44 +31,22 @@ new_logger.addHandler(handler)
 new_logger.propagate = False
 
 
-# def generate_test_logger(
-#     name: __name__, log_file: str, formatting: str = DEFAULT_FORMAT
-# ):
-#     """Generat a custom logger"""
-
-#     new_logger = logging.getLogger(name)
-#     filename = (
-#         "application/tests/ann_tests/full_instance_tests.py/test_logs/log_file"
-#     )
-
-#     should_roll_over = os.path.isfile(filename)
-
-#     handler = logging.handlers.RotatingFileHandler(
-#         filename=filename, mode="w", backupCount=3
-#     )
-#     if should_roll_over:
-#         handler.doRollover()
-#     formatter = logging.Formatter(formatting)
-#     handler.setFormatter(formatter)
-#     new_logger.addHandler(handler)
-#     new_logger.propagate = False
-
-#     return new_logger
-
-
-# test_logger = generate_test_logger(__name__ + "test_logger", "test_log.log")
-
-
 def logger_test_brains_logging(func: Callable[..., Any]) -> Any:
     """Testing the logging for test brains"""
 
     @wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
-        brains = func(*args)
+        brains, this_maze = func(*args)
+        formatted_maze = np.fromstring(this_maze, dtype=int, sep=",")
+        resize_value = int(sqrt(len(formatted_maze)))
+        formatted_maze = formatted_maze.reshape(resize_value, -1)
+        new_logger.info(f"Maze:  \n {formatted_maze}")
+
         for brain in brains:
             new_logger.info(
-                f"Brain: {brain.brain_id} - Generation: {brain.current_generation_number} Path: {brain.traversed_path} Fitness: {brain.fitness}"
+                f"Brain: {brain.brain_id} - Generation: {brain.current_generation_number} Fitness: {brain.fitness} Path: {brain.traversed_path}"
             )
+            # Path: {brain.traversed_path}
 
     return wrapper
 

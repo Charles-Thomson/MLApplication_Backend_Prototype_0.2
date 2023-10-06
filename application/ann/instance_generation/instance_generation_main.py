@@ -4,9 +4,7 @@ import uuid
 
 from functools import partial
 
-from application.ann.environments.environment_types.environment_factory import (
-    EnvironmentFactory,
-)
+from application.ann.environments.environment_factory import EnvironmentFactory
 
 from application.ann.agents.agent_generator import new_agent_generator
 
@@ -22,6 +20,10 @@ from application.ann.logging_files.logging_deco import (
 )
 
 
+# TODO: Chasing down bug with no parents passing fitness - goal issue
+# TODO: Implement ref to movement i.e 0 = UL , 1 = U ect ect
+
+
 class Learning_Instance:
     """
     The generated instance class
@@ -33,6 +35,7 @@ class Learning_Instance:
         self.instance_id: str = id
 
         self.current_fitness_threshold: float = instance_config["fitness_threshold"]
+        self.current_generation_failure_threshold = 2
 
         self.max_number_of_generations: int = instance_config[
             "max_number_of_genrations"
@@ -77,10 +80,14 @@ class Learning_Instance:
                     self.current_parents = self.new_parents
                     self.new_parents = []
                     self.set_new_fitness_threshold()
-                    print("new generation")
                     break
 
                 current_generation_size += 1
+
+            if len(self.current_parents) <= self.current_generation_failure_threshold:
+                print(f"generation has fialed {current_generation_number}")
+                print(f"Parents in faild generation {self.current_parents}")
+                break
 
             current_generation_number += 1
 
@@ -129,8 +136,6 @@ def new_instance(config: json) -> Learning_Instance:
     environment: object = EnvironmentFactory.make_env(
         env_type=config["env_type"], config=env_config
     )
-
-    print("vars generated")
 
     agent_generater: callable = partial(
         new_agent_generator,
