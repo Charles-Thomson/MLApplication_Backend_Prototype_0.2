@@ -2,6 +2,7 @@
 import json
 from typing import Generator
 import uuid
+from operator import attrgetter
 
 from functools import partial
 
@@ -79,8 +80,23 @@ class Learning_Instance:
             if len(new_parents) <= self.current_generation_failure_threshold:
                 break
 
+            self.get_highest_fitness_brain(new_parents)
+
+        # TODO: Get the longest path brain from each generation
+
         # For logging deco
         return self.brains
+
+    # TODO: Write a test with logging to track the highest fitness brain
+    def get_highest_fitness_brain(self, parents: list[object]) -> object:
+        """
+        Get the highest fitness brain from the list of parents
+        """
+        if not parents:
+            return None
+        highest_fitness_brain = max(parents, key=attrgetter("fitness"))
+
+        print(highest_fitness_brain)
 
     def run_generation(
         self, agent_generator: Generator, fitness_threshold: float
