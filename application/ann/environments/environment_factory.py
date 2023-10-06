@@ -85,10 +85,10 @@ class StaticStateEnvironemnt(EnvironemntProtocol):
         reward: float = self.calculate_reward(self.current_coords)
         new_state_x, new_state_y = self.process_action(action)
         termination: bool = self.termination_check(new_state_x, new_state_y)
+        self.path.append(self.current_coords)
 
         new_coords = (new_state_x, new_state_y)
 
-        self.path.append(new_coords)
         self.current_coords = new_coords
         self.current_step += 1
 
@@ -190,8 +190,6 @@ def get_location_value(env_map: np.array, coords: tuple):
     """Get the value of a location in the env"""
     try:
         value = env_map[coords[0]][coords[1]]
-        print(coords, value, "In get Location")
-        print(env_map)
         return value
     except IndexError:
         return 2  # Termination condition

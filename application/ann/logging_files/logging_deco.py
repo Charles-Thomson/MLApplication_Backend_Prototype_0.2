@@ -58,6 +58,7 @@ def fitness_threshold_logger(func: Callable[..., Any]):
     def wrapper(*args: Any) -> Any:
         fitness_threshold = func(*args)
         fitness_threshold_log.info(f"Current Fitness Threshold: {fitness_threshold}")
+        return fitness_threshold
 
     return wrapper
 

@@ -1,5 +1,6 @@
 """generate the intances for trainning of the ann"""
 import json
+from typing import Generator
 import uuid
 
 from functools import partial
@@ -20,8 +21,13 @@ from application.ann.logging_files.logging_deco import (
 )
 
 
-# TODO: Chasing down bug with no parents passing fitness - goal issue
 # TODO: Implement ref to movement i.e 0 = UL , 1 = U ect ect
+
+# TODO: Instance generation:
+# Need to save the highest fitness brain from each instance run
+
+
+# TODO: Set up the Django DB model to store the highest fitness from each instance
 
 
 class Learning_Instance:
@@ -45,7 +51,6 @@ class Learning_Instance:
         self.agent_generator: callable = agent_generator  # new per generation
 
         self.current_parents: list = []
-        self.new_parents: list = []
 
         self.new_generation_threshold: int = instance_config["new_generation_threshold"]
 
@@ -54,71 +59,70 @@ class Learning_Instance:
     def run_instance(self):
         """run the instance"""
         current_generation_number: int = 0
-        current_generation_size: int = 0
+        # new_fitness_threshold = self.current_fitness_threshold
+        new_parents: list = []
 
-        while current_generation_number < self.max_number_of_generations:
+        for current_generation_number in range(self.max_number_of_generations):
+            new_fitness_threshold = self.generate_new_fitness_threshold(new_parents)
+
             agent_generator: object = self.agent_generator(
-                parents=self.current_parents,
+                parents=new_parents,
                 max_generation_size=self.max_generation_size,
                 current_generation_number=current_generation_number,
             )
 
-            current_generation_size = 0
-            print("new generation starting")
+            new_parents = self.run_generation(
+                agent_generator=agent_generator,
+                fitness_threshold=new_fitness_threshold,
+            )
 
-            # break this ot to func ?
-            while current_generation_size < self.max_generation_size:
-                agent = next(agent_generator)
-                post_run_agent_brain: object = agent.run_agent()
-
-                self.brains.append(post_run_agent_brain)  # for logging testing
-
-                if post_run_agent_brain.fitness >= self.current_fitness_threshold:
-                    self.new_parents.append(post_run_agent_brain)
-
-                if len(self.new_parents) >= self.new_generation_threshold:
-                    self.current_parents = self.new_parents
-                    self.new_parents = []
-                    self.set_new_fitness_threshold()
-                    break
-
-                current_generation_size += 1
-
-            if len(self.current_parents) <= self.current_generation_failure_threshold:
-                print(f"generation has fialed {current_generation_number}")
-                print(f"Parents in faild generation {self.current_parents}")
+            if len(new_parents) <= self.current_generation_failure_threshold:
                 break
-
-            current_generation_number += 1
-
-        print(
-            f"SYSTEM - COMPLETED RUN - Generation Reached: {current_generation_number}"
-        )
 
         # For logging deco
         return self.brains
 
+    def run_generation(
+        self, agent_generator: Generator, fitness_threshold: float
+    ) -> None:
+        """
+        Run a new generation
+        var: agent_generator
+        rtn: new_parents - A list of brain instances tha pass the fitnees threshold
+        """
+        new_parents: list = []
+
+        for _ in range(self.max_generation_size):
+            agent = next(agent_generator)
+            post_run_agent_brain: object = agent.run_agent()
+
+            self.brains.append(post_run_agent_brain)  # for logging
+
+            if post_run_agent_brain.fitness >= fitness_threshold:
+                new_parents.append(post_run_agent_brain)
+
+            if len(new_parents) >= self.new_generation_threshold:
+                break
+
+        return new_parents
+
+    # TODO: Move fitness threshold logging to the testing side
     @with_fitness_threshold_logging
-    def set_new_fitness_threshold(self) -> float:
+    def generate_new_fitness_threshold(self, parents: list[object]) -> float:
         """
         Calculate a new fitness threshold based on the average fitness + 10%
         of the given parents fitness
         """
-        parents: list = self.current_parents
-        fitness_threshold_percentage_growth: float = 10
 
-        total_combined_fitness: float = sum(instance.fitness for instance in parents)
-        fitness_average: float = total_combined_fitness / len(parents)
+        if not parents:
+            return 2.0
 
-        new_fitness_threshold: float = (
-            fitness_average
-            + (fitness_average / 100) * fitness_threshold_percentage_growth
+        fitness_average: float = sum(instance.fitness for instance in parents) / len(
+            parents
         )
 
-        self.current_fitness_threshold = new_fitness_threshold
-
-        # For logging deco
-        return new_fitness_threshold
+        # * 10 -> inc threshold by 10%
+        return fitness_average + (fitness_average / 100) * 10
 
 
 def new_instance(config: json) -> Learning_Instance:
@@ -151,8 +155,6 @@ def new_instance(config: json) -> Learning_Instance:
         agent_generator=agent_generater,
         instance_config=instance_config_formatted,
     )
-
-    print(this_instance)
 
     return this_instance
 

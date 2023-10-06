@@ -61,7 +61,7 @@ def test_environment_observation() -> None:
         (8, (1, 1), (2, 2), False),
     ],
 )
-def test_environement_step(action, location, new_location, termination_state) -> None:
+def test_step_by_direction(action, location, new_location, termination_state) -> None:
     """Test a single step in the enviornment"""
     test_env: StaticStateEnvironemnt = EnvironmentFactory.make_env(
         env_type=test_env_type, config=env_config
