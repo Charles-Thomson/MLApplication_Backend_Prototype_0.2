@@ -92,6 +92,12 @@ class Learning_Instance:
         # For logging deco
         return self.brains
 
+    def save_brain_data(self) -> None:
+        """
+        Save the highest fitness and longest path Brain instances
+        from each generation to the DB
+        """
+
     def get_new_agent_generator(
         self,
         new_parents: list,
@@ -161,8 +167,6 @@ class Learning_Instance:
 
         return new_parents
 
-    # TODO: Move fitness threshold logging to the testing side
-    # @with_fitness_threshold_logging
     def generate_new_fitness_threshold(self, parents: list[object]) -> float:
         """
         Calculate a new fitness threshold based on the average fitness + 10%
