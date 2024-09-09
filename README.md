@@ -1,4 +1,4 @@
-New Iteration of the ANN Standalone Application
+New Iteration of the MLApplication backend
 Python
 
 Resolves project structure issues and implements Django framework elements.
